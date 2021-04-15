@@ -3,6 +3,8 @@ import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import ListFiche from "../views/ListFiche.vue";
 import EditFiche from "../views/EditFiche.vue";
+import EditAgent from "../views/EditAgent.vue";
+import ListAgents from "../views/ListAgents.vue";
 
 Vue.use(VueRouter);
 
@@ -13,14 +15,24 @@ const routes = [
     component: Home
   },
   {
-    path: "/list",
+    path: "/listFiche",
     name: "ListFiche",
     component: ListFiche
   },
   {
-    path: "/edit",
+    path: "/listAgents",
+    name: "ListAgents",
+    component: ListAgents
+  },
+  {
+    path: "/editFiche",
     name: "EditFiche",
     component: EditFiche
+  },
+  {
+    path: "/editAgent",
+    name: "EditAgent",
+    component: EditAgent
   },
   {
     path: "/about",

@@ -9,12 +9,12 @@
       >
       <router-link :to="{ name: 'ListFiche' }"
         ><v-btn class="btnMenu" color="indigo darken-1" elevation="4" rounded
-          >Liste fiche</v-btn
+          >Fiches d'asteintes</v-btn
         ></router-link
       >
-      <router-link :to="{ name: 'EditFiche' }"
+      <router-link :to="{ name: 'ListAgents' }"
         ><v-btn class="btnMenu" color="indigo darken-1" elevation="4" rounded
-          >Edite fiche</v-btn
+          >Agents</v-btn
         ></router-link
       >
     </v-app-bar>
