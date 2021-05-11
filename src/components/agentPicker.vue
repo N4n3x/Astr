@@ -96,11 +96,10 @@ export default {
       );
     },
     setRemplacement(remplacement, index) {
-      console.log(remplacement, index);
+      this.$emit("setRemplacement", remplacement, index, this.propsIndexA, this.propsIndexG);
     },
     deleteRemplacement(index) {
-      console.log(index);
-      this.remplacements.splice(index, 1);
+      this.$emit("deleteRemplacement", index, this.propsIndexA, this.propsIndexG);
     },
     querySelections(v) {
       if (v && v.length > 2) {

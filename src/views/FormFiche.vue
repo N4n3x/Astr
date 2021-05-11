@@ -50,6 +50,8 @@
                   @supprAgent="supprAgent"
                   @setAstreinte="setAstreinte"
                   @addRemplacement="addRemplacement"
+                  @setRemplacement="setRemplacement"
+                  @deleteRemplacement="deleteRemplacement"
                   :propsTech="agent"
                   :propsIndexA="index"
                   :propsIndexG="i"
@@ -189,6 +191,9 @@ export default {
     setAstreinte(agent, indexA, indexG){
       this.ficheData.groupes[indexG].astreintes[indexA].agent = agent;
     },
+    setRemplacement(remplacement, indexR, indexA, indexG){
+      this.ficheData.groupes[indexG].astreintes[indexA].remplacements[indexR] = remplacement;
+    },
     addAgent(i){
       this.ficheData.groupes[i].astreintes.push({nni: ""});
     },
@@ -202,6 +207,9 @@ export default {
       if (!this.ficheData.groupes[indexG].astreintes[indexA].remplacements) this.ficheData.groupes[indexG].astreintes[indexA].remplacements = [];
       this.ficheData.groupes[indexG].astreintes[indexA].remplacements.push({});
       console.log(this.ficheData.groupes[indexG].astreintes[indexA]);
+    },
+    deleteRemplacement(indexR, indexA, indexG){
+      this.ficheData.groupes[indexG].astreintes[indexA].remplacements.splice(indexR, 1);
     }
   },
   mounted() {

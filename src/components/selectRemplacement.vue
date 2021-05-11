@@ -37,7 +37,7 @@
             dateFormat="dd/MM/yyyy"
             timeFormat="HH:mm"
             v-model="start"
-            @change="setStart()"
+            @input="setStart()"
           ></datetime-picker>
         </v-col>
         <v-col lg="3" mb="3" sm="3" cols="12">
@@ -46,7 +46,7 @@
             dateFormat="dd/MM/yyyy"
             timeFormat="HH:mm"
             v-model="end"
-            @change="setEnd()"
+            @input="setEnd()"
           ></datetime-picker>
         </v-col>
         <v-col lg="1" mb="1" sm="1" cols="12">
