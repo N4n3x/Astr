@@ -39,12 +39,7 @@
                     09 72 67 50 50
                   </td>
                   <td align="center">
-                    Créée le
-                    {{
-                      this.moment(ficheProp.createdAt)
-                        .locale("fr")
-                        .format("DD/MM/YYYY HH:mm")
-                    }}<br />
+                    Créée le {{ ficheProp.fCreatedAt }}<br />
                     <h1>ASTREINTE {{ ficheProp.zone }}</h1>
                   </td>
                   <td align="right" style="width: 20%" class="textCenter">
@@ -152,13 +147,13 @@
                                 <th style="width: 12%"></th>
                               </tr>
                             </thead>
-                            <!-- <tbody
-                              v-for="remp in ast.remplacements"
-                              :key="remp.agent.nni"
+                            <tbody
+                              v-for="(remp, id) in ast.remplacements"
+                              :key="id"
                             >
                               <tr>
-                                <td>{{ remp.debut }}</td>
-                                <td>{{ remp.fin }}</td>
+                                <td>{{ moment(remp.debut).locale("fr").format("DD/MM HH:MM") }}</td>
+                                <td>{{ moment(remp.fin).locale("fr").format("DD/MM HH:MM") }}</td>
                                 <td>
                                   {{ remp.agent.nom }} {{ remp.agent.prenom }}
                                 </td>
@@ -166,7 +161,7 @@
                                 <td>{{ remp.agent.tel1 }}</td>
                                 <td>{{ remp.agent.tel2 }}</td>
                               </tr>
-                            </tbody> -->
+                            </tbody>
                           </table>
                         </td>
                       </tr>
