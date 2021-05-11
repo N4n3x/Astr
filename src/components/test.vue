@@ -1,54 +1,112 @@
 <template>
-  <div>
-    <v-card>
-      <v-card-title>Test BDD</v-card-title>
-      <v-card-text>
-        <v-form>
-          <v-row>
-            <v-col>
-              <v-text-field v-model="text" label="text" required></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-btn @click="insertData">OK</v-btn>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-btn @click="getAll">load</v-btn>
-              <p v-for="item in items" :key="item._id">{{ item.test }}</p>
-            </v-col>
-          </v-row>
-					<v-row>
-						<v-btn @click="testTruc">test</v-btn>
-					</v-row>
-        </v-form>
-      </v-card-text>
-    </v-card>
-  </div>
+  <form @submit.prevent="onSubmit" @reset="onReset">
+    <div>
+      <v-card>
+        <v-card-title>Test BDD</v-card-title>
+        <v-card-text>
+          <v-autocomplete
+            class="pa-0"
+            clearable
+            v-model="agent"
+            :items="items"
+            :loading="isLoading"
+            :search-input.sync="search"
+            item-text="nni"
+            label="Technicien"
+            placeholder="Commencer à saisir pour rechercher un agent"
+            prepend-icon="mdi-database-search"
+            return-object
+          >
+            <template v-slot:selection="data">
+              <v-chip>{{
+                data.item.nom + " " + data.item.prenom + " - " + data.item.nni
+              }}</v-chip>
+            </template>
+            <template v-slot:item="data">
+              <v-list-item-content>{{
+                data.item.nom + " " + data.item.prenom + " - " + data.item.nni
+              }}</v-list-item-content>
+            </template>
+          </v-autocomplete>
+          <v-btn @click="test">test</v-btn>
+        </v-card-text>
+        <button color="primary">Créer</button>
+      </v-card>
+    </div>
+  </form>
 </template>
 
 <script>
+import { required } from "vuelidate/lib/validators";
 export default {
   data: () => ({
-		text: "",
-		items: []
+    text: "",
+    items: [
+      // {
+      //   nom: "aaaaa",
+      //   prenom: "bbbbb",
+      //   nni: "ccccc"
+      // },
+      // {
+      //   nom: "ddddd",
+      //   prenom: "eeeee",
+      //   nni: "fffff"
+      // },
+      // {
+      //   nom: "ggggg",
+      //   prenom: "hhhhh",
+      //   nni: "iiiii"
+      // }
+    ],
+    agent: {},
+    isLoading: false,
+    search: null,
   }),
+  validations: {
+    agent: {
+      required
+    }
+  },
+  watch: {
+    search: function (v) {
+      this.querySelections(v);
+    },
+  },
   methods: {
-    async insertData() {
-      console.log(this.text);
-      const d = { test: this.text };
-      const re = await this.$dbInsert(d);
-			console.log(re);
-			this.getAll();
+    test() {
+      console.log(this.agent);
+      this.agent = "A00000";
+      console.log(this.agent);
     },
-    async getAll() {
-      this.items = await this.$getAll();
-      console.log(this.items);
+    querySelections(v) {
+      if (v && v.length > 2) {
+        this.loading = true;
+        // Simulated ajax query
+        setTimeout(async () => {
+          this.items = await this.$findAgents(v);
+          // console.log(this.items);
+          this.loading = false;
+        }, 500);
+      }
     },
-    testTruc() {
-      // console.log(__dirname);
+    onSubmit(e) {
+      console.log(e, this.$v);
+      // set all fields to touched
+      this.$v.$touch();
+
+      // stop here if form is invalid
+      if (this.$v.$invalid) return;
+
+      // display form values on success
+      alert("SUCCESS!! :-)\n\n" + JSON.stringify(this.$data, null, 4));
+    },
+    onReset() {
+      // reset form validation errors
+      this.$v.$reset();
+
+      // reset form data
+      const initialData = this.$options.data.call(this);
+      Object.assign(this.$data, initialData);
     },
   },
 };

@@ -16,12 +16,23 @@ export default new Vuex.Store({
         },
       },
       mutations: {
+        setFiche(state, value){
+          state.fiche = value;
+        },
+        resetFiche(state){
+          state.fiche = {
+            zone: "",
+            debut: "",
+            fin: "",
+            groupes: [],
+          }
+        },
         setZone(state, value) {
           state.fiche.zone = value;
         },
-        setPlage(state, start, end) {
-          state.fiche.debut = start;
-          state.fiche.end = end;
+        setPlage(state, plage) {
+          state.fiche.debut = plage[0];
+          state.fiche.fin = plage[1];
         },
         initGroupes(state, value) {
           state.fiche.groupes = value;

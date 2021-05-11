@@ -2,7 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import ListFiche from "../views/ListFiche.vue";
-import EditFiche from "../views/EditFiche.vue";
+import EditFiche from "../views/FormFiche.vue";
 import EditAgent from "../views/EditAgent.vue";
 import ListAgents from "../views/ListAgents.vue";
 
@@ -25,9 +25,10 @@ const routes = [
     component: ListAgents
   },
   {
-    path: "/editFiche",
+    path: "/editFiche/:ficheId",
     name: "EditFiche",
-    component: EditFiche
+    component: EditFiche,
+    props: true
   },
   {
     path: "/editAgent",

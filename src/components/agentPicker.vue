@@ -43,17 +43,16 @@
           >
         </v-col>
       </v-row>
-      <div v-if="this.propsTech.remplacements">
-        <v-row v-for="remplacement in this.propsTech.remplacements" :key="remplacement.id">
-          <v-col class="pa-1">
-            <select-remplacement
-              :remplacement="remplacement"
-              @deleteRemplacement="deleteRemplacement"
-              v-model="remplacements"
-            />
-          </v-col>
-        </v-row>
-      </div>
+      <v-row v-for="(remplacement, index) in remplacements" :key="index">
+        <v-col class="pa-1">
+          <select-remplacement
+            :remplacement="remplacement"
+            :index="index"
+            @setRemplacement="setRemplacement"
+            @deleteRemplacement="deleteRemplacement"
+          />
+        </v-col>
+      </v-row>
     </v-card-text>
   </v-card>
 </template>
@@ -69,45 +68,39 @@ export default {
         prenom: "",
         nni: "",
       },
-      remplacements: [
-        // {
-        //  id: "",
-        // agent: {
-        //   nom: "",
-        //   prenom: "",
-        //   nni: "",
-        // },
-        // debut: "",
-        // fin: ""
-        // },
-      ],
       model: null,
       search: null,
       items: [],
       entries: [],
-      isLoading: false
+      isLoading: false,
+      remplacements: []
     };
   },
   props: {
     propsTech: Object,
-    propsNomGroupe: String
+    propsIndexA: Number,
+    propsIndexG: Number,
   },
   watch: {
     search: function (v) {
       this.querySelections(v);
     },
-    remplacements: function (v) {
-      console.log("remplacements", v);
-    }
   },
   methods: {
-    setAstreinte(){
-      if (this.agent.nni) {
-        this.$emit("setAstreinte", {
-          agent: this.agent, // Pas sûr de ça
-          remplacements: this.remplacements
-        });
-      }
+    setAstreinte() {
+      this.$emit(
+        "setAstreinte",
+        this.agent,
+        this.propsIndexA,
+        this.propsIndexG
+      );
+    },
+    setRemplacement(remplacement, index) {
+      console.log(remplacement, index);
+    },
+    deleteRemplacement(index) {
+      console.log(index);
+      this.remplacements.splice(index, 1);
     },
     querySelections(v) {
       if (v && v.length > 2) {
@@ -121,46 +114,20 @@ export default {
       }
     },
     filter(a) {
-      // console.log(a, b, c);
-      let indexGr = this.$store.state.astreinte.fiche.groupes.findIndex(e => e.nom == this.propsNomGroupe);
-      let indexAg = this.$store.state.astreinte.fiche.groupes[indexGr].astreintes.findIndex(e => e.agent.nni == a.nni);
-      if(indexAg < 0) {
-        return a;
-      }else{
-        return false;
-      }
+      return a;
+    },
+    supprAgent() {
+      this.$emit("supprAgent", this.propsIndexA, this.propsIndexG);
     },
     addRemplacement() {
-      this.remplacements.push({
-        id: this.remplacements.length + 1,
-        agent: {
-          nom: "",
-          prenom: "",
-          nni: "",
-        },
-        debut: "",
-        fin: "",
-      });
-      // console.log(this.remplacements);
+      this.$emit("addRemplacement", this.propsIndexA, this.propsIndexG);
     },
-    deleteRemplacement(id) {
-      // console.log(id);
-      this.remplacements.splice(
-        this.remplacements.findIndex((e) => {
-          e.id == id;
-        })
-      );
-    },
-    supprAgent(){
-      // console.log(this.propsTech.agent.nni)
-      this.$emit("supprAgent", this.propsTech.agent.nni);
-    }
   },
   beforeMount() {
-    if (this.propsTech.agent) {
+    this.agent = this.propsTech.agent;
+    this.remplacements = this.propsTech.remplacements;
+    if (this.propsTech.agent && this.propsTech.agent.nni) {
       this.items.push(this.propsTech.agent);
-      this.agent = this.propsTech.agent;
-      this.remplacements = this.propsTech.remplacements;
     }
   },
 };

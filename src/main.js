@@ -1,4 +1,5 @@
 import Vue from "vue";
+import Vuelidate from 'vuelidate'
 import Layout from "./Layout.vue";
 import "./registerServiceWorker";
 import router from "./router";
@@ -59,38 +60,58 @@ Vue.use({
     v.prototype.$getZones = ["Manche Nord", "Manche Centre et Sud"];
     v.prototype.$modelFicheAstreinte = nom => {
       let model = [];
-      // model.push({
-      //   nom: "Chargé d'exploitation",
-      //   maxAstreintes: 1,
-      //   astreintes: []
-      // });
       switch (nom) {
         case "Manche Nord":
           model.push(
             {
               nom: "Chargé d'exploitation ",
               maxAstreintes: 1,
-              astreintes: []
+              astreintes: [
+                {
+                  agent: {},
+                  remplacements: []
+                }
+              ]
             },
             {
               nom: "Maitrise de soutien",
               maxAstreintes: 1,
-              astreintes: []
+              astreintes: [
+                {
+                  agent: {},
+                  remplacements: []
+                }
+              ]
             },
             {
               nom: "Techniciens Saint Lô",
               maxAstreintes: 5,
-              astreintes: []
+              astreintes: [
+                {
+                  agent: {},
+                  remplacements: []
+                }
+              ]
             },
             {
               nom: "Techniciens Coutance",
               maxAstreintes: 5,
-              astreintes: []
+              astreintes: [
+                {
+                  agent: {},
+                  remplacements: []
+                }
+              ]
             },
             {
               nom: "Techniciens Avranches",
               maxAstreintes: 5,
-              astreintes: []
+              astreintes: [
+                {
+                  agent: {},
+                  remplacements: []
+                }
+              ]
             }
           );
           break;
@@ -99,27 +120,52 @@ Vue.use({
             {
               nom: "Chargé d'exploitation",
               maxAstreintes: 1,
-              astreintes: []
+              astreintes: [
+                {
+                  agent: {},
+                  remplacements: []
+                }
+              ]
             },
             {
               nom: "Maitrise de soutien Equeurdreville",
               maxAstreintes: 1,
-              astreintes: []
+              astreintes: [
+                {
+                  agent: {},
+                  remplacements: []
+                }
+              ]
             },
             {
               nom: "Techniciens Equeurdreville",
               maxAstreintes: 5,
-              astreintes: []
+              astreintes: [
+                {
+                  agent: {},
+                  remplacements: []
+                }
+              ]
             },
             {
               nom: "Maitrise de soutien Valognes",
               maxAstreintes: 1,
-              astreintes: []
+              astreintes: [
+                {
+                  agent: {},
+                  remplacements: []
+                }
+              ]
             },
             {
               nom: "Techniciens Valognes",
               maxAstreintes: 5,
-              astreintes: []
+              astreintes: [
+                {
+                  agent: {},
+                  remplacements: []
+                }
+              ]
             },
           );
           break;
@@ -128,6 +174,25 @@ Vue.use({
           break;
       }
       return model;
+    };
+    v.prototype.$dbFicheInsert = async function(d) {
+      await dbFicheAstreinte.insert(d);
+    };
+    v.prototype.$dbFicheUpdate = async function(d) {
+      await dbFicheAstreinte.update({_id: d._id}, d);
+    };
+    v.prototype.$dbFicheDelete = async function(d) {
+      await dbFicheAstreinte.remove({_id: d}, {});
+    };
+    v.prototype.$getAllFiches = async function() {
+      return new Promise((resolve) => {
+        dbFicheAstreinte.find({}, (err, res) => resolve(res));
+      });
+    };
+    v.prototype.$getFicheById = async function(id) {
+      return new Promise((resolve) => {
+        dbFicheAstreinte.findOne({_id: id}, (err, res) => resolve(res));
+      });
     };
     v.prototype.$test = () => {
       return "truc";
@@ -142,6 +207,8 @@ Vue.use(vuetify, {
     dark: true,
   },
 });
+
+Vue.use(Vuelidate);
 // Vue.use(DatetimePicker)
 new Vue({
   dbAgent,

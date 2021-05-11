@@ -7,7 +7,7 @@
       </v-btn>
     </v-card-title>
     <v-card-text
-      v-for="(agent, index) in this.$store.state.astreinte.fiche.groupes[indexG].astreintes"
+      v-for="(agent, index) in propsGroupe.astreintes"
       :key="index"
     >
       <select-agent
@@ -52,9 +52,12 @@ export default {
     },
     supprAgent(nni) {
       this.$store.commit("astreinte/delAstreinte", [this.propsGroupe.nom, nni]);
-      console.log(this.$store.state.astreinte.fiche.groupes[this.indexG].astreintes);
+      // console.log(this.$store.state.astreinte.fiche.groupes[this.indexG].astreintes);
     },
     setAstreinte(a) {
+      console.log(a);
+      this.propsGroupe.astreintes.push(a);
+      console.log(this.propsGroupe.astreintes);
       this.$store.commit("astreinte/setAstreinte", [this.propsGroupe.nom, a]);
     },
   },
@@ -71,7 +74,7 @@ export default {
       remplacements: [],
     };
     if (!this.propsGroupe.astreintes.length) {
-      this.$store.commit("astreinte/addAstreinte", [this.propsGroupe.nom, a]);
+      this.propsGroupe.astreintes.push(a);
     }
   },
 };

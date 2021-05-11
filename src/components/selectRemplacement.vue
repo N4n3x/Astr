@@ -10,12 +10,14 @@
             :filter="filter"
             :search-input.sync="search"
             hide-no-data
+            clearable
             item-text="nom"
             label="Remplaçant(e)"
             placeholder="Commencer à saisir pour rechercher un agent"
             prepend-icon="mdi-database-search"
             return-object
             class="ma-0"
+            @change="setAgent()"
           >
             <template v-slot:selection="data">
               <v-chip>{{
@@ -35,6 +37,7 @@
             dateFormat="dd/MM/yyyy"
             timeFormat="HH:mm"
             v-model="start"
+            @change="setStart()"
           ></datetime-picker>
         </v-col>
         <v-col lg="3" mb="3" sm="3" cols="12">
@@ -43,6 +46,7 @@
             dateFormat="dd/MM/yyyy"
             timeFormat="HH:mm"
             v-model="end"
+            @change="setEnd()"
           ></datetime-picker>
         </v-col>
         <v-col lg="1" mb="1" sm="1" cols="12">
@@ -60,15 +64,17 @@ export default {
   components: { DatetimePicker },
   props: {
     remplacement: Object,
-  },
-  model: {
-    prop: "rempl",
-    event: "change",
+    index: Number
   },
   data() {
     return {
       start: null,
       end: null,
+      model: null,
+      items: [],
+      isLoading: false,
+      search: null,
+
       agents: [],
       rempl: [],
       temp: {
@@ -78,10 +84,6 @@ export default {
       },
       descriptionLimit: 60,
       entries: [],
-      isLoading: false,
-      model: null,
-      search: null,
-      items: [],
       id: null,
     };
   },
@@ -90,18 +92,15 @@ export default {
       let e = this.moment(v);
       let s = this.moment(this.start);
       this.moment.duration(e.diff(s)) < 0 ? (this.end = this.start) : "";
-      this.rempl[this.id].fin = v;
+      this.temp.fin = v;
       // console.log(this.moment.duration(e.diff(s)));
     },
     start: function (v) {
       let s = this.moment(v);
       let e = this.moment(this.end);
       this.moment.duration(e.diff(s)) < 0 ? (this.start = this.end) : "";
-      this.rempl[this.id].debut = v;
+      this.temp.debut = v;
       // console.log(this.moment.duration(e.diff(s)));
-    },
-    model: function (v){
-      this.rempl[this.id].agent = v;
     },
     search: function (v) {
       this.querySelections(v);
@@ -119,16 +118,33 @@ export default {
         }, 500);
       }
     },
-    filter(a, b, c) {
-      console.log(a, b, c);
+    filter(a) {
       return a;
     },
+    setAgent() {
+      this.rempl.agent = this.model;
+      if (this.start && this.end) {
+        this.$emit("setRemplacement", this.rempl, this.index);
+      }
+    },
+    setStart() {
+      this.rempl.debut = this.start;
+      if (this.rempl.agent && this.end) {
+        this.$emit("setRemplacement", this.rempl, this.index);
+      }
+    },
+    setEnd() {
+      this.rempl.fin = this.end;
+      if (this.rempl.agent && this.start) {
+        this.$emit("setRemplacement", this.rempl, this.index);
+      }
+    },
     deleteRemplacement() {
-      this.$emit("deleteRemplacement", this.remplacement.id);
+      this.$emit("deleteRemplacement", this.index);
     },
   },
   mounted: function (){
-    this.id = this.rempl.push(this.temp) -1;
+    this.rempl = this.remplacement;
   }
 };
 </script>
