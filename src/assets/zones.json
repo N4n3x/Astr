@@ -1,0 +1,19 @@
+{
+    "zones": [
+        {
+            "nom": "Orne",
+            "groupes": [
+                {
+                    "nom": "Chargé d'exploitation",
+                    "nombreAstreintes": 1
+                }
+            ],
+            "informations": {
+                "a": [ "valeur1", "valeur1" ],
+                "b": [ "valeur1", "valeur1" ],
+                "entete": "wysiwyg",
+                "pied": "wysiwyg"
+            }
+        }
+    ]
+}

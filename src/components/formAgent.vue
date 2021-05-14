@@ -1,6 +1,6 @@
 <template>
   <v-sheet class="ma-2" elevation="4">
-    <v-form v-model="valid" ref="form" lazy-validation>
+    <v-form @submit.prevent="onSubmit" @reset="onReset" id="formAgent">
       <v-container>
         <div class="text-h6">Nouvel agent</div>
         <v-row>
@@ -11,6 +11,9 @@
               :rules="txtRules"
               hide-details="auto"
               required
+              @change="() => validAgent.nni = nni"
+              :error="errNNI"
+              :error-messages="errNNIMsg"
             ></v-text-field>
           </v-col>
           <v-col lg="5" mb="5" sm="6" cols="12">
@@ -20,6 +23,7 @@
               :rules="txtRules"
               hide-details="auto"
               required
+              @change="() => validAgent.nom = nom"
             ></v-text-field>
           </v-col>
           <v-col lg="5" mb="5" sm="6" cols="12">
@@ -29,6 +33,7 @@
               :rules="txtRules"
               hide-details="auto"
               required
+              @change="() => validAgent.prenom = prenom"
             ></v-text-field>
           </v-col>
         </v-row>
@@ -40,6 +45,7 @@
               :rules="txtRules"
               hide-details="auto"
               required
+              @change="() => validAgent.commune = commune"
             ></v-text-field>
           </v-col>
           <v-col sm="4" cols="12">
@@ -49,6 +55,7 @@
               :rules="txtRules"
               hide-details="auto"
               required
+              @change="() => validAgent.tel1 = tel1"
             ></v-text-field>
           </v-col>
           <v-col sm="4" cols="12">
@@ -56,19 +63,13 @@
               label="Tel 2"
               hide-details="auto"
               v-model="tel2"
+              @change="() => validAgent.tel2 = tel2"
             ></v-text-field>
           </v-col>
         </v-row>
         <v-row>
           <v-col sm="12" cols="12">
-            <v-btn
-              :disabled="!valid"
-              color="success"
-              class="mr-4"
-              @click="validate"
-            >
-              Ajouter
-            </v-btn>
+            <v-btn :disabled="this.$v.$invalid" color="primary" type="submit" form="formAgent">Créer</v-btn>
           </v-col>
         </v-row>
       </v-container>
@@ -79,11 +80,11 @@
 <script>
 // @ is an alias to /src
 // import Test from "@/components/test.vue";
-
+import { required, minLength, maxLength } from "vuelidate/lib/validators";
 export default {
   components: {},
   props: {
-    agent: Object
+    agent: Object,
   },
   data() {
     return {
@@ -98,44 +99,70 @@ export default {
       commune: "",
       tel1: "",
       tel2: "",
+      errNNI: false,
+      errNNIMsg: "",
+      validAgent: {
+        nni: "",
+        nom: "",
+        prenom: "",
+        commune: "",
+        tel1: "",
+        tel2: "",
+      },
     };
   },
-  methods: {
-    validate() {
-      if (this.$refs.form.validate()) {
-        const agent = {
-          nom: this.nom,
-          prenom: this.prenom,
-          nni: this.nni,
-          commune: this.commune,
-          tel1: this.tel1,
-          tel2: this.tel2
-        };
-        this.insertData(agent);
-        this.$refs.form.reset();
-        // this.resteForm();
-        // console.log(res);
-        // this.$emit("addAgent", this.agent._id);
-      }
-    },
-    async insertData(d) {
-      console.log(this.text);
-      await this.$dbAgentInsert(d, this.createdAgent); 
-      this.getAll();
-    },
-    async getAll() {
-      this.items = await this.$getAllAgents();
-      console.log(this.items);
-    },
-    createdAgent(err, agent){
-      console.log("err insert agent", err);
-      this.$emit("addAgent", agent._id);
+  validations: {
+    validAgent: {
+      nni: {
+        required,
+        minLength: minLength(6),
+        maxLength: maxLength(10)
+      },
+      nom: { required },
+      prenom: { required },
+      commune: { required },
+      tel1: { required },
+      tel2: {}
     }
   },
-  mounted() {
-    // if(this.agent){
+  watch: {
+    agent: function (nv) {
+      if (nv) {
+        this.nni = nv.nni;
+        this.nom = nv.nom;
+        this.prenom = nv.prenom;
+        this.commune = nv.commune;
+        this.tel1 = nv.tel1;
+        this.tel2 = nv.tel2;
 
-    // }
+        this.validAgent.nni = nv.nni;
+        this.validAgent.nom = nv.nom;
+        this.validAgent.prenom = nv.prenom;
+        this.validAgent.commune = nv.commune;
+        this.validAgent.tel1 = nv.tel1;
+        this.validAgent.tel2 = nv.tel2;
+      }
+    },
+  },
+  methods: {
+    async onSubmit() {
+      // set all fields to touched
+      this.$v.$touch();
+
+      // alert(this.$v.$invalid + "\n\n" + JSON.stringify(this.$data, null, 4));
+      if (this.$v.$invalid) return;
+      console.log(this.$data);
+      this.$emit("addAgent", this.$data.validAgent);
+      this.$v.$reset();
+    },
+    onReset() {
+      // reset form validation errors
+      this.$v.$reset();
+
+      // reset form data
+      const initialData = this.$options.data.call(this);
+      Object.assign(this.$data, initialData);
+    },
   }
 };
 </script>

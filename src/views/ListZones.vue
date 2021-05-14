@@ -1,6 +1,12 @@
 <template>
   <v-container fluid>
-    <FormAgent @addAgent="addAgent" :agent="agentPush" />
+    <v-card-title
+      >Zones<v-spacer /><router-link :to="{ name: 'EditZone', params: { zoneId: ''} }"
+        ><v-btn class="btnMenu" color="primary" elevation="4" rounded
+          >+ Nouvelle zone</v-btn
+        ></router-link
+      ></v-card-title
+    >
     <v-data-iterator
       :items.sync="items"
       :items-per-page.sync="itemsPerPage"
@@ -56,11 +62,7 @@
             md="12"
             lg="6"
           >
-            <Agent
-              :agentProps="item"
-              @editAgent="editAgent"
-              @suprAgent="suprAgent"
-            />
+            <Zone :zoneProps="item" @editZone="editZone" @suprZone="suprZone" />
           </v-col>
         </v-row>
       </template>
@@ -117,13 +119,13 @@
 </template>
 
 <script>
-import Agent from "@/components/agent.vue";
-import FormAgent from "@/components/formAgent.vue";
+import Zone from "@/components/zone.vue";
+// import FormZone from "@/components/formZone.vue";
 
 export default {
-  components: { Agent, FormAgent },
+  components: { Zone },
   props: {
-    agentProps: Array,
+    zoneProps: Array,
   },
   data() {
     return {
@@ -134,18 +136,8 @@ export default {
       page: 1,
       itemsPerPage: 8,
       sortBy: "updateAt",
-      keys: [
-        "Nom",
-        "Prenom",
-        "NNI",
-        "Commune",
-        "Tel1",
-        "Tel2",
-        "CreateAt",
-        "UpdateAt"
-      ],
+      keys: ["Nom", "CreateAt", "UpdateAt"],
       items: [],
-      agentPush: null
     };
   },
   computed: {
@@ -166,26 +158,12 @@ export default {
     updateItemsPerPage(number) {
       this.itemsPerPage = number;
     },
-    async getAgents() {
-      return await this.$getAllAgents();
-    },
-    async editAgent(id) {
-      console.log("edit", id);
-      this.agentPush = await this.$agentByID(id);
-    },
-    async suprAgent(id) {
-      console.log("supr", id);
-      await this.$deleteAgent(id);
-      this.items = await this.getAgents();
-    },
-    async addAgent(agent) {
-      await this.$upsertAgent(agent);
-      // const i = this.items.findIndex((e)=> e.nni === agent.nni);
-      this.items = await this.getAgents();
-    },
+    async getZones() {
+      return await this.$getAllZones();
+    }
   },
   async beforeMount() {
-    this.items = await this.getAgents();
+    this.items = await this.getZones();
   },
 };
 </script>

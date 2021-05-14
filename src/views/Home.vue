@@ -1,17 +1,25 @@
 <template>
-  <div class="home">
-    <test />
-  </div>
+  <v-card class="home">
+    <v-card-title>
+      <h1 class="text-h1">Bienvenue dans F.Ast.</h1>
+    </v-card-title>
+    <v-card-text>
+      <h2 class="text-h2">Le générateur de fiches d'astreintes</h2>
+    </v-card-text>
+    <v-card-subtitle>
+      <p class="text-subtitle-1">
+        Pour nous contacter: 
+        <a href="mailto:ndie-it@enedis.fr">NDIE-IT@ENEDIS.FR</a>
+      </p>
+    </v-card-subtitle>
+  </v-card>
 </template>
 
 <script>
 // @ is an alias to /src
-import Test from "@/components/test.vue";
 
 export default {
   name: "Home",
-  components: {
-    Test
-  }
+  components: {}
 };
 </script>

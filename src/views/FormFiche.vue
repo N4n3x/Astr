@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="onSubmit" @reset="onReset">
+  <form @submit.prevent="onSubmit" @reset="onReset" id="formAstreinte">
     <v-card>
       <v-card-title>Edition Fiche d'astreinte</v-card-title>
       <v-card-text>
@@ -62,7 +62,7 @@
         </v-row>
       </v-card-text>
       <v-card-subtitle v-if="zone">
-        <button color="primary">Créer</button>
+        <v-btn :disabled="this.$v.$invalid" color="primary" type="submit" form="formAstreinte">Créer</v-btn>
       </v-card-subtitle>
     </v-card>
   </form>
@@ -147,7 +147,7 @@ export default {
       this.$v.$touch();
 
       // stop here if form is invalid
-      alert(this.$v.$invalid + "\n\n" + JSON.stringify(this.$data, null, 4));
+      // alert(this.$v.$invalid + "\n\n" + JSON.stringify(this.$data, null, 4));
       if (this.$v.$invalid) return;
 
       // display form values on success

@@ -7,6 +7,9 @@ import store from "./store";
 import vuetify from "./plugins/vuetify";
 import { ipcRenderer } from "electron";
 import moment from "moment";
+import { TiptapVuetifyPlugin } from "tiptap-vuetify";
+import "tiptap-vuetify/dist/main.css";
+import 'vuetify/dist/vuetify.min.css';
 let appPath = ipcRenderer.sendSync("synchronous-message", "ping");
 console.log(appPath);
 const Datastore = require("nedb");
@@ -18,10 +21,17 @@ const dbFicheAstreinte = new Datastore({
   filename: appPath + "./ficheAstreinte",
   timestampData: true,
 });
+const dbZones = new Datastore({
+  filename: appPath + "./zones",
+  timestampData: true,
+});
 dbAgent.loadDatabase((err) => {
   console.log(err);
 });
 dbFicheAstreinte.loadDatabase((err) => {
+  console.log(err);
+});
+dbZones.loadDatabase((err) => {
   console.log(err);
 });
 
@@ -31,6 +41,12 @@ Vue.use({
   install(v) {
     v.prototype.$dbAgentInsert = async function(d, f) {
       await dbAgent.insert(d, f);
+    };
+    v.prototype.$upsertAgent = async function(d) {
+      await dbAgent.update({nni: d.nni}, d, {upsert: true});
+    };
+    v.prototype.$deleteAgent = async function(d) {
+      await dbAgent.remove({ _id: d }, {});
     };
     v.prototype.$getAllAgents = async function() {
       return new Promise((resolve) => {
@@ -57,7 +73,28 @@ Vue.use({
         );
       });
     };
-    v.prototype.$getZones = ["Manche Nord", "Manche Centre et Sud"];
+    v.prototype.$agentByID = async function(id) {
+      return new Promise((resolve) => {
+        dbAgent.findOne({ _id: id }, (err, res) => resolve(res));
+      });
+    };
+    v.prototype.$nniExist = async function(nni) {
+      return new Promise((resolve) => {
+        dbAgent.count({ nni: nni }, (err, res) => resolve(res));
+      });
+    };
+    v.prototype.$getZones = ["Manche Nord", "Manche Centre et Sud", "Orne"];
+    v.prototype.$upsertZone = async function(d) {
+      await dbZones.update({nom: d.nom}, d, {upsert: true});
+    };
+    v.prototype.$deleteZone = async function(d) {
+      await dbZones.remove({ _id: d }, {});
+    };
+    v.prototype.$getAllZones = async function() {
+      return new Promise((resolve) => {
+        dbZones.find({}, (err, res) => resolve(res));
+      });
+    };
     v.prototype.$modelFicheAstreinte = nom => {
       let model = [];
       switch (nom) {
@@ -169,6 +206,80 @@ Vue.use({
             },
           );
           break;
+          case "Orne":
+          model.push(
+            {
+              nom: "Chargé d'exploitation",
+              maxAstreintes: 1,
+              astreintes: [
+                {
+                  agent: {},
+                  remplacements: []
+                }
+              ]
+            },
+            {
+              nom: "Maitrise de soutien BO Ouest",
+              maxAstreintes: 1,
+              astreintes: [
+                {
+                  agent: {},
+                  remplacements: []
+                }
+              ]
+            },
+            {
+              nom: "Techniciens Flers",
+              maxAstreintes: 5,
+              astreintes: [
+                {
+                  agent: {},
+                  remplacements: []
+                }
+              ]
+            },
+            {
+              nom: "Techniciens Argentan",
+              maxAstreintes: 5,
+              astreintes: [
+                {
+                  agent: {},
+                  remplacements: []
+                }
+              ]
+            },
+            {
+              nom: "Maitrise de soutien BO Est",
+              maxAstreintes: 1,
+              astreintes: [
+                {
+                  agent: {},
+                  remplacements: []
+                }
+              ]
+            },
+            {
+              nom: "Techniciens Alencon",
+              maxAstreintes: 5,
+              astreintes: [
+                {
+                  agent: {},
+                  remplacements: []
+                }
+              ]
+            },
+            {
+              nom: "Techniciens L aigle",
+              maxAstreintes: 5,
+              astreintes: [
+                {
+                  agent: {},
+                  remplacements: []
+                }
+              ]
+            },
+          );
+          break;
         default:
           model = [];
           break;
@@ -209,7 +320,14 @@ Vue.use(vuetify, {
 });
 
 Vue.use(Vuelidate);
-// Vue.use(DatetimePicker)
+
+Vue.use(TiptapVuetifyPlugin, {
+  // the next line is important! You need to provide the Vuetify Object to this place.
+  vuetify, // same as "vuetify: vuetify"
+  // optional, default to 'md' (default vuetify icons before v2.0.0)
+  iconsGroup: 'mdi'
+})
+
 new Vue({
   dbAgent,
   router,
