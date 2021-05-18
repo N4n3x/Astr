@@ -131,11 +131,9 @@
 </template>
 
 <script>
-// @ is an alias to /src
-// import Test from "@/components/test.vue";
 import Fiche from "@/components/fiche.vue";
 export default {
-  components: {Fiche},
+  components: { Fiche },
   data() {
     return {
       itemsPerPageArray: [8, 12, 16],
@@ -154,7 +152,7 @@ export default {
       return Math.ceil(this.items.length / this.itemsPerPage);
     },
     filteredKeys() {
-      return this.keys.filter((key) => key !== "Debut");
+      return this.keys.filter( key => key !== "Debut");
     },
   },
   methods: {

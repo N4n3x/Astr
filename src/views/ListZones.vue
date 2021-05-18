@@ -120,8 +120,6 @@
 
 <script>
 import Zone from "@/components/zone.vue";
-// import FormZone from "@/components/formZone.vue";
-
 export default {
   components: { Zone },
   props: {
