@@ -7,7 +7,7 @@
       :enable-download="false"
       :preview-modal="true"
       :paginate-elements-by-height="1400"
-      :filename="ficheProp.zone"
+      :filename="ficheProp.zone.nom"
       :pdf-quality="2"
       :manual-pagination="false"
       pdf-format="a4"
@@ -40,7 +40,7 @@
                   </td>
                   <td align="center">
                     Créée le {{ ficheProp.fCreatedAt }}<br />
-                    <h1>ASTREINTE {{ ficheProp.zone }}</h1>
+                    <h1>ASTREINTE {{ ficheProp.zone.nom }}</h1>
                   </td>
                   <td align="right" style="width: 20%" class="textCenter">
                     CAD<br />
@@ -73,8 +73,9 @@
                 <tr>
                   <td colspan="3"><br /></td>
                 </tr>
-                <tr class="">
-                  <td class="textCenter">CHARGE DE CONDUITE</td>
+                <tr>
+                  <td colspan="3" class="entete" v-html="ficheProp.zone.informations.entete"></td>
+                  <!-- <td class="textCenter">CHARGE DE CONDUITE</td>
                   <td class="textCenter">
                     ACR CAEN Salle de conduite tel: 02 31 70 31 48 fax: 02 31 34
                     25 78
@@ -107,7 +108,7 @@
                       </tr>
                     </table>
                   </td>
-                  <td>RADIO: 14-3250</td>
+                  <td>RADIO: 14-3250</td> -->
                 </tr>
               </table>
             </div>
@@ -170,8 +171,8 @@
                 </table>
               </div>
             </div>
-            <div class="foot">
-              <table width="100%">
+            <div class="foot" v-html="ficheProp.zone.informations.pied">
+              <!-- <table width="100%">
                 <tbody>
                   <tr>
                     <td>Permanence territoire</td>
@@ -190,7 +191,7 @@
                     </td>
                   </tr>
                 </tbody>
-              </table>
+              </table> -->
             </div>
           </body>
         </html>
@@ -265,6 +266,10 @@ table {
   border-collapse: collapse;
 }
 
+.entete {
+  text-align: center;
+}
+
 .content td {
   border: 1px solid grey;
   padding: 3px;
@@ -300,7 +305,7 @@ h5 {
   position: absolute;
   bottom: 0;
   padding: 5px;
-  min-width: 90%;
+  min-width: 98%;
 }
 
 .textCenter {

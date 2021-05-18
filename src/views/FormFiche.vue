@@ -24,10 +24,12 @@
           ></v-date-picker>
         </v-menu>
         <v-select
-          :items="items"
+          :items="zones"
           label="Choisir la zone"
           v-model="zone"
+          item-text="nom"
           @input="setZone"
+          return-object
         ></v-select>
         <v-row
           v-for="(grp, i) in ficheData.groupes"
@@ -38,7 +40,13 @@
             <v-card>
               <v-card-title>
                 {{ grp.nom }}<v-spacer />
-                <v-btn v-if="grp.astreintes.length < grp.maxAstreintes" small rounded color="primary" @click="addAgent(i)">
+                <v-btn
+                  v-if="grp.astreintes.length < grp.nombreAstreintes"
+                  small
+                  rounded
+                  color="primary"
+                  @click="addAgent(i)"
+                >
                   + Ajouter un agent
                 </v-btn>
               </v-card-title>
@@ -62,7 +70,13 @@
         </v-row>
       </v-card-text>
       <v-card-subtitle v-if="zone">
-        <v-btn :disabled="this.$v.$invalid" color="primary" type="submit" form="formAstreinte">Créer</v-btn>
+        <v-btn
+          :disabled="this.$v.$invalid"
+          color="primary"
+          type="submit"
+          form="formAstreinte"
+          >Créer</v-btn
+        >
       </v-card-subtitle>
     </v-card>
   </form>
@@ -84,7 +98,8 @@ export default {
   data() {
     return {
       items: [],
-      zone: "",
+      zone: {},
+      zones: [],
       dateRange: "",
       date: [
         this.moment().format("YYYY-MM-DD"),
@@ -95,7 +110,7 @@ export default {
       ficheData: {
         debut: "",
         fin: "",
-        zone: "",
+        zone: {},
         groupes: [],
       },
     };
@@ -103,25 +118,21 @@ export default {
   validations: {
     ficheData: {
       debut: {
-        required
+        required,
       },
       fin: {
-        required
+        required,
       },
-      zone: {
-        required
-      },
+      zone: {},
       groupes: {
         $each: {
           astreintes: {
             $each: {
               agent: {
-                required
+                required,
               },
-              remplacements: {
-                
-              }
-            }
+              remplacements: {},
+            },
           },
         },
       },
@@ -138,8 +149,15 @@ export default {
       );
     },
     setZone(v) {
-      this.ficheData.groupes = this.$modelFicheAstreinte(v);
+      this.ficheData.groupes = v.groupes;
+      this.ficheData.groupes.map((v) =>
+        v.astreintes.push({
+          agent: {},
+          remplacements: [],
+        })
+      );
       this.ficheData.zone = v;
+      console.log(this.ficheData);
     },
     async onSubmit() {
       console.log(this.$data);
@@ -151,14 +169,14 @@ export default {
       if (this.$v.$invalid) return;
 
       // display form values on success
-      
+
       if (this.$data.ficheData._id) {
         await this.updateFiche(this.$data.ficheData);
       } else {
         await this.createFiche(this.$data.ficheData);
       }
       this.$v.$reset();
-      this.$router.push({ name: 'ListFiche', params: { etat: "Success" }})
+      this.$router.push({ name: "ListFiche", params: { etat: "Success" } });
     },
     onReset() {
       // reset form validation errors
@@ -172,7 +190,7 @@ export default {
       const re = await this.$dbFicheInsert(data);
       console.log(re);
     },
-    async updateFiche(data){
+    async updateFiche(data) {
       const re = await this.$dbFicheUpdate(data);
       console.log(re);
     },
@@ -184,35 +202,45 @@ export default {
       this.ficheData = fiche;
       console.log(fiche);
     },
-    supprAgent(indexA, indexG){
+    supprAgent(indexA, indexG) {
       console.log(indexA, indexG);
       this.ficheData.groupes[indexG].astreintes.splice(indexA, 1);
     },
-    setAstreinte(agent, indexA, indexG){
+    setAstreinte(agent, indexA, indexG) {
       this.ficheData.groupes[indexG].astreintes[indexA].agent = agent;
     },
-    setRemplacement(remplacement, indexR, indexA, indexG){
-      this.ficheData.groupes[indexG].astreintes[indexA].remplacements[indexR] = remplacement;
+    setRemplacement(remplacement, indexR, indexA, indexG) {
+      this.ficheData.groupes[indexG].astreintes[indexA].remplacements[
+        indexR
+      ] = remplacement;
     },
-    addAgent(i){
-      this.ficheData.groupes[i].astreintes.push({nni: ""});
+    addAgent(i) {
+      this.ficheData.groupes[i].astreintes.push({
+        agent: {},
+        remplacements: []
+      });
     },
-    setDate(){
-      this.menu = false
-      console.log(this.date[0])
+    setDate() {
+      this.menu = false;
+      console.log(this.date[0]);
       this.ficheData.debut = this.date[0];
       this.ficheData.fin = this.date[1];
     },
-    addRemplacement(indexA, indexG){
-      if (!this.ficheData.groupes[indexG].astreintes[indexA].remplacements) this.ficheData.groupes[indexG].astreintes[indexA].remplacements = [];
+    addRemplacement(indexA, indexG) {
+      if (!this.ficheData.groupes[indexG].astreintes[indexA].remplacements)
+        this.ficheData.groupes[indexG].astreintes[indexA].remplacements = [];
       this.ficheData.groupes[indexG].astreintes[indexA].remplacements.push({});
       console.log(this.ficheData.groupes[indexG].astreintes[indexA]);
     },
-    deleteRemplacement(indexR, indexA, indexG){
-      this.ficheData.groupes[indexG].astreintes[indexA].remplacements.splice(indexR, 1);
-    }
+    deleteRemplacement(indexR, indexA, indexG) {
+      this.ficheData.groupes[indexG].astreintes[indexA].remplacements.splice(
+        indexR,
+        1
+      );
+    },
   },
-  mounted() {
+  async mounted() {
+    this.zones = await this.$getAllZones();
     this.items = this.$getZones;
     this.ficheData.debut = this.date[0];
     this.ficheData.fin = this.date[1];

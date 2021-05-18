@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-card-title
-      >Zones<v-spacer /><router-link :to="{ name: 'EditZone', params: { zoneId: ''} }"
+      >Zones<v-spacer /><router-link :to='{ name: "EditZone", params: { zoneId: ""} }'
         ><v-btn class="btnMenu" color="primary" elevation="4" rounded
           >+ Nouvelle zone</v-btn
         ></router-link
@@ -62,7 +62,7 @@
             md="12"
             lg="6"
           >
-            <Zone :zoneProps="item" @editZone="editZone" @suprZone="suprZone" />
+            <Zone :zoneProps="item" @editZone="editZone" @deleteZone="deleteZone" />
           </v-col>
         </v-row>
       </template>
@@ -157,6 +157,13 @@ export default {
     },
     updateItemsPerPage(number) {
       this.itemsPerPage = number;
+    },
+    editZone(id){
+      this.$router.push({ name: "EditZone", params: { zoneId: id }});
+    },
+    async deleteZone(id){
+      this.$deleteZone(id);
+      this.items = await this.getZones();
     },
     async getZones() {
       return await this.$getAllZones();

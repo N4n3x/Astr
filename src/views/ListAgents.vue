@@ -2,6 +2,7 @@
   <v-container fluid>
     <FormAgent @addAgent="addAgent" :agent="agentPush" />
     <v-data-iterator
+      v-if="isLoaded"
       :items.sync="items"
       :items-per-page.sync="itemsPerPage"
       :page.sync="page"
@@ -134,6 +135,7 @@ export default {
       page: 1,
       itemsPerPage: 8,
       sortBy: "updateAt",
+      isLoaded: true,
       keys: [
         "Nom",
         "Prenom",
@@ -179,9 +181,11 @@ export default {
       this.items = await this.getAgents();
     },
     async addAgent(agent) {
+      this.isLoaded = false;
       await this.$upsertAgent(agent);
       // const i = this.items.findIndex((e)=> e.nni === agent.nni);
       this.items = await this.getAgents();
+      this.isLoaded = true;
     },
   },
   async beforeMount() {

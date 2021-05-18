@@ -95,6 +95,11 @@ Vue.use({
         dbZones.find({}, (err, res) => resolve(res));
       });
     };
+    v.prototype.$getZoneByID = async function(id) {
+      return new Promise((resolve) => {
+        dbZones.findOne({ _id: id }, (err, res) => resolve(res));
+      });
+    };
     v.prototype.$modelFicheAstreinte = nom => {
       let model = [];
       switch (nom) {

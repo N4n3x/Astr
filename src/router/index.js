@@ -45,7 +45,8 @@ const routes = [
   {
     path: "/editZone",
     name: "EditZone",
-    component: EditZone
+    component: EditZone,
+    props: true
   },
   {
     path: "/about",

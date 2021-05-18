@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title
-      >{{ fiche.zone }} - Du {{ this.moment(fiche.debut).locale("fr").format("ddd DD MMM") }} au {{ this.moment(fiche.fin).locale("fr").format("ddd DD MMM YYYY") }}</v-card-title
+      >{{ fiche.zone.nom }} - Du {{ this.moment(fiche.debut).locale("fr").format("ddd DD MMM") }} au {{ this.moment(fiche.fin).locale("fr").format("ddd DD MMM YYYY") }}</v-card-title
     >
     <v-card-actions>
       <ul>
@@ -37,7 +37,7 @@ export default {
   props: {
     ficheProps: Object,
   },
-  mounted() {
+  beforeMount() {
     this.fiche = this.ficheProps;
     this.fiche.fCreatedAt = this.moment(this.fiche.createdAt).format(
       "DD/MM/YYYY HH:MM"
@@ -45,6 +45,11 @@ export default {
     this.fiche.fUpdatedAt = this.moment(this.fiche.updatedAt).format(
       "DD/MM/YYYY HH:MM"
     );
+    const t = String(this.fiche.zone.informations.entete);
+    this.fiche.zone.informations.entete = t.replace(/<table>/g, '<table style="width:100%; text-align:center">');
+    const u = String(this.fiche.zone.informations.pied);
+    this.fiche.zone.informations.pied = u.replace(/<table>/g, '<table style="width:100%; text-align:center">');
+
   },
   methods: {
     editFiche() {

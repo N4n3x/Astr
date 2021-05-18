@@ -92,6 +92,9 @@ import {
 } from "tiptap-vuetify";
 export default {
   components: { TiptapVuetify },
+  props: {
+    zoneId: String
+  },
   data() {
     return {
       zoneNom: "",
@@ -143,6 +146,7 @@ export default {
     zoneData: {
       nom: { required },
       groupes: {
+        required,
         $each: {
           nom: { required },
           nombreAstreintes: { required },
@@ -156,30 +160,36 @@ export default {
   },
   methods: {
     async onSubmit() {
-      console.log(this.$data);
       // set all fields to touched
       this.$v.$touch();
 
       // stop here if form is invalid
-      alert(this.$v.$invalid + "\n\n" + JSON.stringify(this.$data, null, 4));
+      console.log(this.$v.$invalid, this.$data);
       if (this.$v.$invalid) return;
-
-      // display form values on success
-
-      // if (this.$data.ficheData._id) {
-      //   await this.updateFiche(this.$data.ficheData);
-      // } else {
-      //   await this.createFiche(this.$data.ficheData);
-      // }
+      await this.$upsertZone(this.$data.zoneData);
       this.$v.$reset();
-      // this.$router.push({ name: 'ListFiche', params: { etat: "Success" }})
+      this.$router.push({ name: "ListZones", params: { etat: "Success" }});
     },
     addZone() {
       this.zoneData.groupes.push({
         nom: "",
         nombreAstreintes: 1,
+        astreintes: []
       });
     },
   },
+  async mounted() {
+    if(this.zoneId){
+      let zone = await this.$getZoneByID(this.zoneId);
+      console.log(zone);
+      this.zoneNom = zone.nom;
+      this.infoEntete = zone.informations.entete;
+      this.infoPied = zone.informations.pied;
+      this.zoneData.nom = zone.nom;
+      this.zoneData.informations = zone.informations;
+      this.zoneData.groupes = zone.groupes;
+      console.log(this.infoEntete);
+    }
+  }
 };
 </script>
