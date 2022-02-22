@@ -12,7 +12,7 @@
         <v-card>
           <v-card-title
             >Groupes d'astreintes<v-spacer />
-            <v-btn small rounded color="primary" @click="addZone()">
+            <v-btn small rounded color="primary" @click="addGroup()">
               + Groupe
             </v-btn>
           </v-card-title>
@@ -21,16 +21,30 @@
             :key="i"
             :set="(v = $v.zoneData.groupes.$each[i])"
           >
-            <v-text-field
-              v-model="grp.nom"
-              clearable
-              label="Nom de la zone"
-            ></v-text-field>
-            <v-text-field
-              v-model="grp.nombreAstreintes"
-              clearable
-              label="Nombre d'astreinte max"
-            ></v-text-field>
+            <v-card>
+              <v-card-title
+                ><v-spacer /><v-btn
+                  small
+                  rounded
+                  color="error"
+                  @click="deleteGroup(i)"
+                >
+                  X
+                </v-btn></v-card-title
+              >
+              <v-card-text>
+                <v-text-field
+                  v-model="grp.nom"
+                  clearable
+                  label="Nom de la zone"
+                ></v-text-field>
+                <v-text-field
+                  v-model="grp.nombreAstreintes"
+                  clearable
+                  label="Nombre d'astreinte max"
+                ></v-text-field>
+              </v-card-text>
+            </v-card>
           </v-card-text>
         </v-card>
         <v-card>
@@ -93,7 +107,7 @@ import {
 export default {
   components: { TiptapVuetify },
   props: {
-    zoneId: String
+    zoneId: String,
   },
   data() {
     return {
@@ -168,18 +182,21 @@ export default {
       if (this.$v.$invalid) return;
       await this.$upsertZone(this.$data.zoneData);
       this.$v.$reset();
-      this.$router.push({ name: "ListZones", params: { etat: "Success" }});
+      this.$router.push({ name: "ListZones", params: { etat: "Success" } });
     },
-    addZone() {
+    addGroup() {
       this.zoneData.groupes.push({
         nom: "",
         nombreAstreintes: 1,
-        astreintes: []
+        astreintes: [],
       });
     },
+    deleteGroup(i){
+      this.zoneData.groupes.splice(i, 1);
+    }
   },
   async mounted() {
-    if(this.zoneId){
+    if (this.zoneId) {
       let zone = await this.$getZoneByID(this.zoneId);
       console.log(zone);
       this.zoneNom = zone.nom;
@@ -190,6 +207,6 @@ export default {
       this.zoneData.groupes = zone.groupes;
       console.log(this.infoEntete);
     }
-  }
+  },
 };
 </script>

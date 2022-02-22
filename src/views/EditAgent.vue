@@ -12,7 +12,6 @@ export default {
     return {
       txtRules: [
         (value) => !!value || "Obligatoire",
-        //   value => (value && value.length >= 3) || "Min 3 characters"
       ],
       valid: true,
       nni: "",

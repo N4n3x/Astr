@@ -7,6 +7,7 @@ import EditAgent from "../views/EditAgent.vue";
 import ListAgents from "../views/ListAgents.vue";
 import ListZones from "../views/ListZones.vue";
 import EditZone from "../views/EditZone.vue";
+import ImportAgents from "../views/ImportAgents.vue";
 
 Vue.use(VueRouter);
 
@@ -25,6 +26,11 @@ const routes = [
     path: "/listAgents",
     name: "ListAgents",
     component: ListAgents
+  },
+  {
+    path: "/importAgents",
+    name: "ImportAgents",
+    component: ImportAgents
   },
   {
     path: "/editFiche/:ficheId",

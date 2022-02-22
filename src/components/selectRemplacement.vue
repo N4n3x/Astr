@@ -4,7 +4,7 @@
       <v-row justify="center" align="center">
         <v-col lg="5" mb="5" sm="5" cols="12">
           <v-autocomplete
-            v-model="model"
+            v-model="agent"
             :items="items"
             :loading="isLoading"
             :filter="filter"
@@ -74,7 +74,11 @@ export default {
       items: [],
       isLoading: false,
       search: null,
-
+      agent: {
+        nom: "",
+        prenom: "",
+        nni: "",
+      },
       agents: [],
       rempl: [],
       temp: {
@@ -122,7 +126,7 @@ export default {
       return a;
     },
     setAgent() {
-      this.rempl.agent = this.model;
+      this.rempl.agent = this.agent;
       if (this.start && this.end) {
         this.$emit("setRemplacement", this.rempl, this.index);
       }
@@ -143,8 +147,14 @@ export default {
       this.$emit("deleteRemplacement", this.index);
     },
   },
-  mounted: function (){
+  beforeMount() {
+    this.agent = this.remplacement.agent;
+    this.start = this.remplacement.debut;
+    this.end = this.remplacement.fin;
     this.rempl = this.remplacement;
+    if (this.remplacement.agent && this.remplacement.agent.nni) {
+      this.items.push(this.remplacement.agent);
+    }
   }
 };
 </script>

@@ -35,23 +35,25 @@
               <table width="100%">
                 <tr>
                   <td align="left" style="width: 20%" class="textCenter">
-                    Dépannage électricité<br />
-                    09 72 67 50 50
+                    <!-- Dépannage électricité<br />
+                    09 72 67 50 50 -->
                   </td>
                   <td align="center">
                     Créée le {{ ficheProp.fCreatedAt }}<br />
-                    <h1>ASTREINTE {{ ficheProp.zone.nom }}</h1>
+                    <h1 style="font-size: 2rem">
+                      ASTREINTE {{ ficheProp.zone.nom }}
+                    </h1>
                   </td>
                   <td align="right" style="width: 20%" class="textCenter">
-                    CAD<br />
+                    <!-- CAD<br />
                     CEX: 09 70 82 12 23<br />
-                    Radio: 50224
+                    Radio: 50224 -->
                   </td>
                 </tr>
                 <tr class="green">
                   <td class="textCenter">
-                    Dépannage gaz<br />
-                    0 800 473 333
+                    <!-- Dépannage gaz<br />
+                    0 800 473 333 -->
                   </td>
                   <td class="textCenter">
                     <h2>
@@ -74,7 +76,11 @@
                   <td colspan="3"><br /></td>
                 </tr>
                 <tr>
-                  <td colspan="3" class="entete" v-html="ficheProp.zone.informations.entete"></td>
+                  <td
+                    colspan="3"
+                    class="entete"
+                    v-html="ficheProp.zone.informations.entete"
+                  ></td>
                   <!-- <td class="textCenter">CHARGE DE CONDUITE</td>
                   <td class="textCenter">
                     ACR CAEN Salle de conduite tel: 02 31 70 31 48 fax: 02 31 34
@@ -114,7 +120,7 @@
             </div>
 
             <div class="content">
-              <table width="100%">
+              <!-- <table width="100%">
                 <thead>
                   <tr>
                     <th align="left" style="width: 30%"></th>
@@ -123,18 +129,30 @@
                     <th align="center" style="width: 15%">Tel perso</th>
                   </tr>
                 </thead>
-              </table>
+              </table> -->
               <div v-for="(grp, i) in ficheProp.groupes" :key="i">
-                <h3 v-if="i != 0">{{ grp.nom }}</h3>
+                <!-- <h3 v-if="i != 0">{{ grp.nom }}</h3> -->
                 <table width="100%">
+                  <thead>
+                    <tr>
+                      <th align="left" style="width: 30%"><h2>{{ grp.nom }}</h2></th>
+                      <th align="center" v-if="i === 0">Commune</th>
+                      <th align="center" style="width: 15%" v-if="i === 0">Tel pro</th>
+                      <th align="center" style="width: 15%" v-if="i === 0">Tel perso</th>
+                    </tr>
+                  </thead>
                   <tbody v-for="(ast, index) in grp.astreintes" :key="index">
                     <tr v-if="ast.agent.nom != ''">
-                      <td style="width: 30%">{{ ast.agent.nom }} {{ ast.agent.prenom }}</td>
+                      <td style="width: 30%">
+                        {{ ast.agent.nom }} {{ ast.agent.prenom }}
+                      </td>
                       <td>{{ ast.agent.commune }}</td>
                       <td style="width: 15%">{{ ast.agent.tel1 }}</td>
                       <td style="width: 15%">{{ ast.agent.tel1 }}</td>
                     </tr>
-                    <template v-if="ast.remplacements && ast.remplacements.length > 0">
+                    <template
+                      v-if="ast.remplacements && ast.remplacements.length > 0"
+                    >
                       <tr>
                         <td colspan="4">
                           <table width="100%" class="remplacement">
@@ -153,8 +171,20 @@
                               :key="id"
                             >
                               <tr>
-                                <td>{{ moment(remp.debut).locale("fr").format("DD/MM HH:MM") }}</td>
-                                <td>{{ moment(remp.fin).locale("fr").format("DD/MM HH:MM") }}</td>
+                                <td>
+                                  {{
+                                    moment(remp.debut)
+                                      .locale("fr")
+                                      .format("DD/MM HH:MM")
+                                  }}
+                                </td>
+                                <td>
+                                  {{
+                                    moment(remp.fin)
+                                      .locale("fr")
+                                      .format("DD/MM HH:MM")
+                                  }}
+                                </td>
                                 <td>
                                   {{ remp.agent.nom }} {{ remp.agent.prenom }}
                                 </td>

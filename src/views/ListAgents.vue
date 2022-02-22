@@ -3,7 +3,7 @@
     <FormAgent @addAgent="addAgent" :agent="agentPush" />
     <v-data-iterator
       v-if="isLoaded"
-      :items.sync="items"
+      :items="items"
       :items-per-page.sync="itemsPerPage"
       :page.sync="page"
       :search="search"
@@ -50,8 +50,8 @@
       <template v-slot:default="props">
         <v-row>
           <v-col
-            v-for="(item, i) in props.items"
-            :key="i"
+            v-for="(item) in props.items"
+            :key="item.nni"
             cols="12"
             sm="12"
             md="12"
@@ -183,7 +183,6 @@ export default {
     async addAgent(agent) {
       this.isLoaded = false;
       await this.$upsertAgent(agent);
-      // const i = this.items.findIndex((e)=> e.nni === agent.nni);
       this.items = await this.getAgents();
       this.isLoaded = true;
     },

@@ -55,8 +55,8 @@
       <template v-slot:default="props">
         <v-row>
           <v-col
-            v-for="(item, i) in props.items"
-            :key="i"
+            v-for="(item) in props.items"
+            :key="item.nom"
             cols="12"
             sm="12"
             md="12"

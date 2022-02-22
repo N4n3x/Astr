@@ -22,6 +22,11 @@
           >Zones</v-btn
         ></router-link
       >
+      <router-link :to="{ name: 'ImportAgents' }"
+        ><v-btn class="btnMenu" color="indigo darken-1" elevation="4" rounded
+          >Import/Export Agents</v-btn
+        ></router-link
+      >
     </v-app-bar>
 
     <v-main class="dark">

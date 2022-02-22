@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuelidate from 'vuelidate'
 import Layout from "./Layout.vue";
+import path from "path";
 import "./registerServiceWorker";
 import router from "./router";
 import store from "./store";
@@ -11,18 +12,22 @@ import { TiptapVuetifyPlugin } from "tiptap-vuetify";
 import "tiptap-vuetify/dist/main.css";
 import 'vuetify/dist/vuetify.min.css';
 let appPath = ipcRenderer.sendSync("synchronous-message", "ping");
-console.log(appPath);
+appPath = appPath.replace("\\app.asar", "");
+console.log(path.join(appPath, "/../db/agent.db"));
 const Datastore = require("nedb");
 const dbAgent = new Datastore({
-  filename: appPath + "./agent",
+  filename: path.join(appPath, "/../db/agent.db"),
+  autoload: true,
   timestampData: true,
 });
 const dbFicheAstreinte = new Datastore({
-  filename: appPath + "./ficheAstreinte",
+  filename: path.join(appPath, "/../db/ficheAstreinte.db"),
+  autoload: true,
   timestampData: true,
 });
 const dbZones = new Datastore({
-  filename: appPath + "./zones",
+  filename: path.join(appPath, "/../db/zones.db"),
+  autoload: true,
   timestampData: true,
 });
 dbAgent.loadDatabase((err) => {
@@ -43,7 +48,9 @@ Vue.use({
       await dbAgent.insert(d, f);
     };
     v.prototype.$upsertAgent = async function(d) {
-      await dbAgent.update({nni: d.nni}, d, {upsert: true});
+      return await dbAgent.update({nni: d.nni}, d, {upsert: true}, (err, a) => {
+        return a;
+      });
     };
     v.prototype.$deleteAgent = async function(d) {
       await dbAgent.remove({ _id: d }, {});
@@ -139,7 +146,9 @@ Vue.use(TiptapVuetifyPlugin, {
   vuetify, // same as "vuetify: vuetify"
   // optional, default to 'md' (default vuetify icons before v2.0.0)
   iconsGroup: 'mdi'
-})
+});
+
+// Vue.use(VueCsvImportPlugin);
 
 new Vue({
   dbAgent,
