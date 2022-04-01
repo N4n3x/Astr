@@ -10,6 +10,7 @@
       <p class="text-subtitle-1">
         Pour nous contacter: 
         <a href="mailto:ndie-it@enedis.fr">NDIE-IT@ENEDIS.FR</a>
+        {{ this.$test() }}
       </p>
     </v-card-subtitle>
   </v-card>

@@ -46,9 +46,9 @@ export default {
       "DD/MM/YYYY HH:MM"
     );
     const t = String(this.fiche.zone.informations.entete);
-    this.fiche.zone.informations.entete = t.replace(/<table>/g, '<table style="width:100%; text-align:center">');
+    this.fiche.zone.informations.entete = t.replace(/<table>/g, '<table style="width:100%;">');
     const u = String(this.fiche.zone.informations.pied);
-    this.fiche.zone.informations.pied = u.replace(/<table>/g, '<table style="width:100%; text-align:center">');
+    this.fiche.zone.informations.pied = u.replace(/<table>/g, '<table style="width:100%;">');
 
   },
   methods: {

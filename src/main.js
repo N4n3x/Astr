@@ -126,7 +126,7 @@ Vue.use({
       });
     };
     v.prototype.$test = () => {
-      return "truc";
+      return path.join(appPath, "/../db/agent.db");
     };
   },
 });

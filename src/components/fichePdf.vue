@@ -78,7 +78,6 @@
                 <tr>
                   <td
                     colspan="3"
-                    class="entete"
                     v-html="ficheProp.zone.informations.entete"
                   ></td>
                   <!-- <td class="textCenter">CHARGE DE CONDUITE</td>
@@ -256,6 +255,7 @@ export default {
             refs function generatePdf()
         */
     generateReport() {
+      console.log(this.$props.ficheProp.zone.informations.entete);
       this.$refs.html2Pdf.generatePdf();
     },
     onProgress(progress) {
@@ -296,9 +296,9 @@ table {
   border-collapse: collapse;
 }
 
-.entete {
+/* #entete {
   text-align: center;
-}
+} */
 
 .content td {
   border: 1px solid grey;
